@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -132,7 +133,27 @@ func main() {
 		log.Fatalf("This program is designed to run on Linux as it relies on the proc filesystem.")
 	}
 
-	PID, _ := getPIDByName("mattermost")
-	procsList, _ := getChildrenInfo(PID)
-	writeRecordsCSV("./plugin_mem.csv", procsList)
+	var parentName = flag.String("pname", "", "Name of the parent process")
+	var parentPID = flag.Int("ppid", 0, "PID of the parent process")
+	var outputFile = flag.String("output", "./child_mem.csv", "Path to the output CSV file")
+	flag.Parse()
+
+	var PID int
+	if *parentName != "" && *parentPID == 0 {
+		var err error
+		PID, err = getPIDByName(*parentName)
+		if err != nil {
+			log.Fatalf("failed to get PID for process '%s': %v", *parentName, err)
+		}
+	} else if *parentName == "" && *parentPID > 0 {
+		PID = *parentPID
+	} else {
+		log.Fatalf("ambiguous parent PID and process name given")
+	}
+
+	procsList, err := getChildrenInfo(PID)
+	if err != nil {
+		log.Fatalf("failed to get children info for PID %d: %v", PID, err)
+	}
+	writeRecordsCSV(*outputFile, procsList)
 }
