@@ -15,9 +15,9 @@ import (
 
 type ProcessInfo struct {
 	Timestamp int64
-	PID int
-	MemoryKB uint64
-	CmdLine []string
+	PID       int
+	MemoryKB  uint64
+	CmdLine   []string
 }
 
 func getPIDByName(name string) (int, error) {
@@ -71,11 +71,11 @@ func getChildrenInfo(PID int) ([]ProcessInfo, error) {
 				cmdLine = []string{"<unavailable>"}
 			}
 
-			record := ProcessInfo {
+			record := ProcessInfo{
 				Timestamp: time.Now().Unix(),
-				PID: p.PID,
-				MemoryKB: uint64(stat.ResidentMemory()) / 1024,
-				CmdLine: cmdLine,
+				PID:       p.PID,
+				MemoryKB:  uint64(stat.ResidentMemory()) / 1024,
+				CmdLine:   cmdLine,
 			}
 
 			procsList = append(procsList, record)
