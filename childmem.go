@@ -46,7 +46,7 @@ func getPIDByName(name string) (int, error) {
 	return 0, fmt.Errorf("process %s not found", name)
 }
 
-func getChildrenInfo(PID int) ([]ProcessInfo, error) {
+func getChildrenInfo(PID int, includeParent bool) ([]ProcessInfo, error) {
 	var procsList []ProcessInfo
 
 	fs, err := procfs.NewDefaultFS()
@@ -66,7 +66,7 @@ func getChildrenInfo(PID int) ([]ProcessInfo, error) {
 			continue
 		}
 
-		if stat.PPID == PID {
+		if stat.PPID == PID || ((p.PID == PID) && (includeParent == true)) {
 			cmdLine, err := p.CmdLine()
 			if err != nil {
 				cmdLine = []string{"<unavailable>"}
@@ -135,6 +135,7 @@ func main() {
 
 	var parentName = flag.String("pname", "", "Name of the parent process")
 	var parentPID = flag.Int("ppid", 0, "PID of the parent process")
+	var includeParent = flag.Bool("includeParent", false, "Wheter to include the parent process in the data")
 	var outputFile = flag.String("output", "./child_mem.csv", "Path to the output CSV file")
 	flag.Parse()
 
@@ -151,7 +152,7 @@ func main() {
 		log.Fatalf("ambiguous parent PID and process name given")
 	}
 
-	procsList, err := getChildrenInfo(PID)
+	procsList, err := getChildrenInfo(PID, *includeParent)
 	if err != nil {
 		log.Fatalf("failed to get children info for PID %d: %v", PID, err)
 	}

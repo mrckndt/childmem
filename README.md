@@ -16,8 +16,9 @@ The `childmem` tool requires either a parent process name (`-pname`) or a parent
 ./childmem -ppid <parent_process_id> [-output <output_file.csv>]
 ```
 
-### Arguments:
+### Arguments
 
 -   `-pname <name>`: The name of the parent process to monitor.
 -   `-ppid <pid>`: The PID of the parent process to monitor.
+-   `-includeParent`: (Optional) Include the parent process in the output.
 -   `-output <file>`: (Optional) Path to the output CSV file. Defaults to `./child_mem.csv`.
