@@ -82,6 +82,10 @@ func getChildrenInfo(PID int) ([]ProcessInfo, error) {
 		}
 	}
 
+	if len(procsList) == 0 {
+		return procsList, fmt.Errorf("no child processes found")
+	}
+
 	return procsList, nil
 }
 
