@@ -13,14 +13,22 @@ FROM alpine:latest
 ENV INTERVAL=30
 ENV PNAME="mattermost"
 
+# create non-root user
+RUN addgroup -g 1000 childmem && \
+    adduser -D -u 1000 -G childmem childmem
+
 WORKDIR /app
 
 COPY --from=builder /build/childmem .
 COPY build/loop.sh .
-RUN chmod +x loop.sh childmem
-RUN mkdir -p /data
+RUN chmod +x loop.sh childmem && \
+    chown -R childmem:childmem /app
+
+USER childmem
+
+RUN mkdir -p /app/data
 
 CMD ./loop.sh ${INTERVAL} "/app/childmem \
     -pname ${PNAME} \
-    -output \"/data/child_mem.csv\" \
+    -output \"/app/data/child_mem.csv\" \
     -includeParent"

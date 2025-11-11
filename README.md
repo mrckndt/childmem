@@ -31,15 +31,20 @@ docker build -t childmem -f build/Dockerfile .
 
 ### Run with defaults (30s interval, monitoring "mattermost" process)
 ```bash
-docker run --pid=host -v ./data:/data childmem
+docker run --security-opt=no-new-privileges --pid=host -v ./data:/app/data childmem
 ```
 
 ### Run with custom settings
 ```bash
 # Custom interval and process name
-docker run -e INTERVAL=10 -e PNAME="nginx" --pid=host -v ./data:/data childmem
+docker run -e INTERVAL=10 -e PNAME="nginx" --security-opt=no-new-privileges --pid=host -v ./data:/app/data childmem
 ```
 
 ### Environment variables
--   `INTERVAL`: Seconds between runs (default: 30)
--   `PNAME`: Process name to monitor (default: "mattermost")
+- `INTERVAL`: Seconds between runs (default: 30)
+- `PNAME`: Process name to monitor (default: "mattermost")
+
+### Security Notes
+- `childmem` runs as non-root user (UID/GID 1000) inside container
+- Requires `--pid=host` to access host process information
+- Ensure the data directory on the host is owned by UID 1000
