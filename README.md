@@ -22,3 +22,24 @@ The `childmem` tool requires either a parent process name (`-pname`) or a parent
 -   `-ppid <pid>`: The PID of the parent process to monitor.
 -   `-includeParent`: (Optional) Include the parent process in the output.
 -   `-output <file>`: (Optional) Path to the output CSV file. Defaults to `./child_mem.csv`.
+
+## Docker Usage
+### Building the image
+```bash
+docker build -t childmem -f build/Dockerfile .
+```
+
+### Run with defaults (30s interval, monitoring "mattermost" process)
+```bash
+docker run --pid=host -v ./data:/data childmem
+```
+
+### Run with custom settings
+```bash
+# Custom interval and process name
+docker run -e INTERVAL=10 -e PNAME="nginx" --pid=host -v ./data:/data childmem
+```
+
+### Environment variables
+-   `INTERVAL`: Seconds between runs (default: 30)
+-   `PNAME`: Process name to monitor (default: "mattermost")
