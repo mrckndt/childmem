@@ -47,4 +47,4 @@ docker run -e INTERVAL=10 -e PNAME="nginx" --security-opt=no-new-privileges --pi
 ### Security Notes
 - `childmem` runs as non-root user (UID/GID 1000) inside container
 - Requires `--pid=host` to access host process information
-- Ensure the data directory on the host is owned by UID 1000
+- Ensure the data directory on the host is owned by UID 1000 (`sudo chown -R 1000:1000 ./data`)
