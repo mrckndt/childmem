@@ -28,7 +28,4 @@ USER childmem
 
 RUN mkdir -p /app/data
 
-CMD ./loop.sh ${INTERVAL} "/app/childmem \
-    -pname ${PNAME} \
-    -output \"/app/data/child_mem.csv\" \
-    -includeParent"
+CMD ["/bin/sh", "-c", "./loop.sh ${INTERVAL} \"/app/childmem -pname ${PNAME} -output \\\"/app/data/child_mem.csv\\\" -includeParent\""]
